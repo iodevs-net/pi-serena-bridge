@@ -32,9 +32,9 @@ export class SerenaClient implements ISemanticProvider {
 
     this.client = new Client(
       { 
-        name: "pi-serena-bridge", 
+        name: "omni-pi", 
         version: "1.3.0",
-        description: "Native Semantic Bridge for oh-my-pi",
+        description: "Universal Semantic Intelligence for oh-my-pi",
       },
       { capabilities: {} }
     );
@@ -69,7 +69,7 @@ export class SerenaClient implements ISemanticProvider {
   public async getSymbolsOverview(path: string, timeoutMs = this.DEFAULT_TIMEOUT): Promise<string> {
     if (!this.isConnected) {
       const ok = await this.connect();
-      if (!ok) return "[Bridge] Serena no disponible.";
+      if (!ok) return "[Omni-Pi] Serena no disponible.";
     }
 
     const cached = this.cache.get(path);

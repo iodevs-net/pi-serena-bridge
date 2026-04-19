@@ -1,41 +1,38 @@
-# Pi-Serena Semantic Bridge (v1.3.0)
+# Omni-Pi (v1.3.0)
 
-**Native Semantic Bridge for oh-my-pi and Serena MCP.**
+**Universal Semantic Intelligence Bridge for oh-my-pi.**
 
-Este bridge integra el servidor **Serena MCP** con el ecosistema **oh-my-pi** (OMP) para dotar al agente de una "visión semántica" proactiva, previniendo errores de dependencia y cambios disruptivos antes de que ocurran.
+**Omni-Pi** es una extensión de inteligencia semántica proactiva diseñada para el ecosistema **oh-my-pi** (OMP). Actúa como un puente agnóstico que conecta agentes de codificación con servidores de conocimiento semántico (como Serena MCP, LSP o Tree-sitter), dotando al agente de una "visión arquitectónica" global y previniendo cambios disruptivos mediante análisis de impacto profundo.
 
-## 🛡️ Características Elite
+## 🛡️ Características Principales
 
-- **Deep Impact Analysis (v1.3.0)**: Rastreo proactivo de referencias cruzadas. El bridge te advierte si un cambio local afecta a otros archivos del proyecto.
-- **Semantic Gatekeeper**: Intercepta llamadas a herramientas de edición (`tool_call`) para validar la integridad semántica.
-- **Smart Context Injection**: Inyecta proactivamente un mapa de símbolos optimizado cuando detecta intención de modificar código.
-- **Smart Compression**: Algoritmo de priorización que asegura que el contexto inyectado contenga la estructura más valiosa (exports, clases, interfaces).
-- **Vendor-Agnostic Architecture**: Diseñado bajo el patrón Strategy. Puedes cambiar Serena por cualquier otro proveedor semántico (LSP, Tree-sitter) mediante la interfaz `ISemanticProvider`.
-- **Resiliencia Industrial**: Implementa Circuit Breaker, reconexión automática y caché semántica con TTL.
-- **Elite Test Suite**: Suite de pruebas unitarias integradas con Bun Test para garantizar la estabilidad del núcleo.
+- **Deep Impact Analysis**: Rastreo proactivo de referencias cruzadas. Omni-Pi te advierte si un cambio local afecta a otros archivos o contratos públicos en el proyecto.
+- **Semantic Gatekeeper**: Intercepta llamadas a herramientas de edición para validar la integridad semántica antes de que se apliquen los cambios.
+- **Universal Provider Architecture**: Diseño desacoplado bajo el patrón Strategy. Soporta múltiples motores de análisis (actualmente optimizado para Serena MCP).
+- **Proactive Context Injection**: Inyecta automáticamente mapas de símbolos comprimidos y priorizados cuando detecta intención de modificación en el lenguaje natural.
+- **Elite Resilience**: Sistema de caché inteligente, Circuit Breaker para fallos de red y timeouts dinámicos de 3s para garantizar latencia cero en el flujo de trabajo.
 
-## 🚀 Instalación Rápida
+## 🚀 Instalación
 
-1. Asegúrate de tener instalado [oh-my-pi](https://github.com/iodevs-net/oh-my-pi).
-2. Clona este repositorio en tu directorio de extensiones:
+1. Clona este repositorio en tu directorio de extensiones de oh-my-pi:
    ```bash
    cd ~/.omp/extensions/
-   git clone https://github.com/iodevs-net/pi-serena-bridge.git
+   git clone https://github.com/iodevs-net/omni-pi.git
    ```
-3. Instala las dependencias y verifica:
+2. Instala las dependencias:
    ```bash
-   cd pi-serena-bridge
+   cd omni-pi
    bun install
+   ```
+3. Verifica la integridad:
+   ```bash
    bun test
    ```
 
-## 🛠️ Arquitectura
+## 🛠️ Filosofía de Diseño
 
-El bridge sigue una arquitectura de tres capas desacopladas:
-- **Capa A**: Adaptador de Cliente (Gestiona la conexión MCP y la resiliencia).
-- **Capa B**: Compresor Semántico (Optimiza la data para el LLM).
-- **Capa C**: Interceptores de Hooks (Implementa la lógica de oh-my-pi).
+Omni-Pi no es solo un puente; es un multiplicador de precisión. Su objetivo es transformar a cualquier agente de codificación de un "escritor de archivos" a un "arquitecto de sistemas", proporcionando la señal semántica exacta necesaria para mantener codebases sanos a gran escala.
 
 ## 📄 Licencia
 
-MIT - Desarrollado con orgullo para el ecosistema de agentes autónomos.
+MIT - Evolucionando el desarrollo asistido por IA.

@@ -12,12 +12,12 @@ export async function handleSessionStart(
   try {
     const ok = await provider.connect();
     if (ok) {
-      ctx.ui.notify("✅ Semántica Activa");
-      console.log("[Bridge] Motor semántico listo e indexando.");
+      ctx.ui.notify("✅ [Omni-Pi] Semántica Activa");
+      console.log("[Omni-Pi] Motor semántico listo e indexando.");
     } else {
-      ctx.ui.notify("⚠️ Semántica en modo degradado");
+      ctx.ui.notify("⚠️ [Omni-Pi] Semántica en modo degradado");
     }
   } catch (error) {
-    console.error("[Bridge] Error al conectar con el motor semántico:", error);
+    console.error("[Omni-Pi] Error al conectar con el motor semántico:", error);
   }
 }

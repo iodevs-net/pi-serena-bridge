@@ -1,13 +1,17 @@
 {
-  "name": "pi-serena-bridge",
+  "name": "omni-pi",
   "version": "1.3.0",
-  "description": "Native Semantic Bridge for oh-my-pi and Serena MCP",
+  "description": "Universal Semantic Intelligence Bridge for oh-my-pi",
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
     "check": "tsc --noEmit",
     "test": "bun test",
     "start": "bun run src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iodevs-net/omni-pi.git"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.6.0"

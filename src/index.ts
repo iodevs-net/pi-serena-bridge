@@ -36,5 +36,5 @@ export default function(api: any) {
     handleSessionShutdown(event, ctx, serena)
   );
 
-  console.log("[Bridge] Extensión pi-serena-bridge registrada correctamente.");
+  console.log("[Omni-Pi] Extensión omni-pi registrada correctamente.");
 }

@@ -17,7 +17,7 @@ export async function handleToolCall(
   if (!targetPath) return;
 
   try {
-    ctx.ui.notify(`[Bridge] Validando impacto en: ${targetPath}`);
+    ctx.ui.notify(`[Omni-Pi] Validando impacto en: ${targetPath}`);
     
     const overview = await provider.getSymbolsOverview(targetPath);
     
@@ -59,10 +59,10 @@ export async function handleToolCall(
       const compressed = SemanticCompressor.compress(overview);
       return {
         block: false,
-        reason: `[BRIDGE_ADVISORY] Estructura de archivo detectada:\n${compressed}`
+        reason: `[OMNI_PI_ADVISORY] Estructura de archivo detectada:\n${compressed}`
       };
     }
   } catch (error) {
-    console.error("[Bridge] Error en Análisis de Impacto:", error);
+    console.error("[Omni-Pi] Error en Análisis de Impacto:", error);
   }
 }

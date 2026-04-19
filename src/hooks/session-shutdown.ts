@@ -11,10 +11,10 @@ export async function handleSessionShutdown(
   provider: ISemanticProvider
 ): Promise<void> {
   try {
-    ctx.ui.notify("[Bridge] Cerrando puente semántico...");
+    ctx.ui.notify("[Omni-Pi] Cerrando puente semántico...");
     await provider.disconnect();
-    console.log("[Bridge] Sesión finalizada correctamente.");
+    console.log("[Omni-Pi] Sesión finalizada correctamente.");
   } catch (error) {
-    console.error("[Bridge] Error durante el cierre de sesión:", error);
+    console.error("[Omni-Pi] Error durante el cierre de sesión:", error);
   }
 }

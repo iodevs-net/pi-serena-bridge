@@ -29,7 +29,7 @@ export async function handleContext(
       const pathMatch = lastMessage.content.match(/['"`]([^'"`]+\.(ts|js|tsx|jsx|py|go|rs|java|cs))[`'"]/);
       const targetPath = pathMatch?.[1] || ".";
 
-      ctx.ui.notify(`[Bridge] Analizando semántica de: ${targetPath}`);
+      ctx.ui.notify(`[Omni-Pi] Analizando semántica de: ${targetPath}`);
       
       const symbols = await provider.getSymbolsOverview(targetPath);
       if (!symbols || symbols.length < 10) return;
