@@ -24,7 +24,12 @@ export class SerenaClient implements ISemanticProvider {
     });
 
     this.client = new Client(
-      { name: "pi-serena-bridge", version: "1.1.0" },
+      { 
+        name: "pi-serena-bridge", 
+        version: "1.2.0",
+        // Metadata extendida para estándares 2026
+        description: "Native Semantic Bridge for oh-my-pi",
+      },
       { capabilities: {} }
     );
   }
