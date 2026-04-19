@@ -20,7 +20,8 @@ export class SemanticCompressor {
     const implementationLines: string[] = [];
 
     for (const line of lines) {
-      const isStructural = /export|class|interface|enum|type|public|abstract/.test(line);
+      // Priorizamos exportaciones, clases, interfaces, tipos y jerarquías (Audit 2026 Micro-fix)
+      const isStructural = /export|class|interface|enum|type|public|private|protected|abstract|extends|implements/.test(line);
       if (isStructural) {
         structuralLines.push(line);
       } else {
