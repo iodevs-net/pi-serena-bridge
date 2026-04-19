@@ -16,7 +16,7 @@ export async function handleContext(
 
   // Manejar contenido que puede ser string o Array de partes
   const rawContent = Array.isArray(lastMessage.content) 
-    ? lastMessage.content.map(p => ("text" in p ? p.text : "")).join(" ")
+    ? lastMessage.content.map((p: any) => ("text" in p ? p.text : "")).join(" ")
     : String(lastMessage.content);
 
   const content = rawContent.toLowerCase();

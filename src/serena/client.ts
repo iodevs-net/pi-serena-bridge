@@ -26,7 +26,8 @@ export class SerenaClient implements ISemanticProvider {
         "--from",
         "git+https://github.com/oraios/serena",
         "serena",
-        "start-mcp-server"
+        "start-mcp-server",
+        "--project-from-cwd"
       ],
     });
 
