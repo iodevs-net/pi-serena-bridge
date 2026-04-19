@@ -1,36 +1,41 @@
-import type { ExtensionContext, ToolCallEvent } from "@oh-my-pi/pi-coding-agent";
 import { SerenaClient } from "../serena/client.ts";
+import { ToolCallEvent, ExtensionContext, HookResponse } from "../types.ts";
+import { SemanticCompressor } from "../compressor.ts";
 
+/**
+ * Hook: tool_call
+ * Valida ediciones antes de que se ejecuten. Actúa como Gatekeeper.
+ */
 export async function handleToolCall(
   event: ToolCallEvent,
   ctx: ExtensionContext,
   serena: SerenaClient
-) {
-  if (event.toolName !== "edit") return undefined;
+): Promise<HookResponse | void> {
+  // Solo interceptamos herramientas de edición o escritura
+  const writeTools = ["edit", "write", "replace_file_content", "multi_replace_file_content"];
+  if (!writeTools.includes(event.toolName)) return;
 
-  const { path, loc } = event.input as { path: string; loc?: string };
-  if (!path) return undefined;
+  const targetPath = event.input.path || event.input.TargetFile;
+  if (!targetPath) return;
 
-  // 1. Resolve symbol at loc via Serena
-  // For now, we assume Serena can help us find what's at that location
-  // or we just check the impact of changing that file.
-  
   try {
-    const overview = await serena.getSymbolsOverview(path);
-    // Logic to find which symbol is at 'loc' line
-    // ...
+    console.log(`[Bridge] Validando edición en: ${targetPath}`);
     
-    // 2. Validate impact
-    // If we detect a breaking change, we can block it
-    /*
-    return {
-      block: true,
-      reason: "This edit breaks 'routes.ts:45'. Please update the caller first."
-    };
-    */
-  } catch (err) {
-    console.error("Serena validation failed:", err);
+    // Consultamos a Serena por dependencias externas del archivo
+    const overview = await serena.getSymbolsOverview(targetPath);
+    
+    // Si Serena devuelve símbolos con muchas referencias, avisar al LLM
+    // (Por ahora implementamos un aviso preventivo, el bloqueo total requiere lógica más compleja)
+    const compressed = SemanticCompressor.compress(overview);
+    
+    if (compressed.includes("- ")) {
+      console.log("[Bridge] Detectados símbolos críticos. Inyectando advertencia.");
+      return {
+        block: false, // No bloqueamos por defecto para no romper el flujo, pero advertimos
+        message: `[BRIDGE_WARNING] Estás editando un archivo con dependencias activas:\n${compressed}\nAsegúrate de que tus cambios sean compatibles.`
+      };
+    }
+  } catch (error) {
+    console.error("[Bridge] Fallo en la validación de herramienta:", error);
   }
-
-  return undefined; // Let it pass
 }

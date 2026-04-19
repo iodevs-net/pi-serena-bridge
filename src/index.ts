@@ -10,11 +10,18 @@ export default function (api: HookAPI) {
   const serena = new SerenaClient(process.cwd());
 
   // Register Hooks
-  api.on("session_start", (event, ctx) => handleSessionStart(event, ctx, serena));
+  api.on("session_start", (event, ctx) => handleSessionStart(event as any, ctx as any, serena));
   
-  api.on("context", (event, ctx) => handleContext(event, ctx, serena));
+  api.on("context", (event, ctx) => handleContext(event as any, ctx as any, serena));
 
-  api.on("tool_call", (event, ctx) => handleToolCall(event, ctx, serena));
+  api.on("tool_call", async (event, ctx) => {
+    const response = await handleToolCall(event as any, ctx as any, serena);
+    if (response) {
+      if (response.block) return { block: true, message: response.message };
+      // Si no bloquea, podemos inyectar el mensaje como un warning
+      return { message: response.message };
+    }
+  });
   
   api.on("session_shutdown", async () => {
     await serena.disconnect();
