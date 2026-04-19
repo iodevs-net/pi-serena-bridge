@@ -1,11 +1,12 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { ISemanticProvider } from "../types.js";
 
 /**
  * Layer A: Serena Adapter (Resilient Version)
  * Handles MCP connection, semantic caching, and circuit-breaker logic.
  */
-export class SerenaClient {
+export class SerenaClient implements ISemanticProvider {
   private client: Client;
   private transport: StdioClientTransport;
   private isConnected: boolean = false;

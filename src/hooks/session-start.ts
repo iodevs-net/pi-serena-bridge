@@ -1,24 +1,23 @@
-import { SerenaClient } from "../serena/client.ts";
-import { SessionStartEvent, ExtensionContext } from "../types.ts";
+import { SessionStartEvent, ExtensionContext, ISemanticProvider } from "../types.js";
 
 /**
  * Hook: session_start
- * Activa Serena y asegura la indexación del proyecto al inicio.
+ * Inicializa la conexión con el motor semántico.
  */
 export async function handleSessionStart(
   event: SessionStartEvent,
   ctx: ExtensionContext,
-  serena: SerenaClient
+  provider: ISemanticProvider
 ) {
   try {
-    console.log("[Bridge] Iniciando conexión con Serena MCP...");
-    await serena.connect();
-    
-    // El cliente de Serena ya activa el proyecto en el constructor/connect
-    ctx.ui.setStatus("serena", "✅ Semántica Activa");
-    console.log("[Bridge] Serena lista e indexando.");
+    const ok = await provider.connect();
+    if (ok) {
+      ctx.ui.notify("✅ Semántica Activa");
+      console.log("[Bridge] Motor semántico listo e indexando.");
+    } else {
+      ctx.ui.notify("⚠️ Semántica en modo degradado");
+    }
   } catch (error) {
-    console.error("[Bridge] Error al conectar con Serena:", error);
-    ctx.ui.setStatus("serena", "❌ Semántica Desactivada");
+    console.error("[Bridge] Error al conectar con el motor semántico:", error);
   }
 }

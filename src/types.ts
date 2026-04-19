@@ -36,3 +36,14 @@ export interface HookResponse {
   message?: string;
   modifiedMessages?: any[];
 }
+
+/**
+ * Interface agnóstica para proveedores de análisis semántico.
+ * Permite cambiar Serena por LSP u otras herramientas en el futuro.
+ */
+export interface ISemanticProvider {
+  connect(): Promise<boolean>;
+  disconnect(): Promise<void>;
+  getSymbolsOverview(path: string, timeoutMs?: number): Promise<string>;
+  getHealth(): { connected: boolean; error: string | null; cacheEntries: number };
+}

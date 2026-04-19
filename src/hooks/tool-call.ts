@@ -1,40 +1,35 @@
-import { SerenaClient } from "../serena/client.ts";
-import { ToolCallEvent, ExtensionContext, HookResponse } from "../types.ts";
-import { SemanticCompressor } from "../compressor.ts";
+import { ToolCallEvent, ExtensionContext, HookResponse, ISemanticProvider } from "../types.js";
+import { SemanticCompressor } from "../compressor.js";
 
 /**
- * Hook: tool_call
- * Valida ediciones antes de que se ejecuten. Actúa como Gatekeeper.
+ * Hook: tool_call (Gatekeeper Semántico)
+ * Intercepta ediciones y valida contra el grafo de dependencias.
  */
 export async function handleToolCall(
   event: ToolCallEvent,
   ctx: ExtensionContext,
-  serena: SerenaClient
+  provider: ISemanticProvider
 ): Promise<HookResponse | void> {
-  // Solo interceptamos herramientas de edición o escritura
-  const writeTools = ["edit", "write", "replace_file_content", "multi_replace_file_content"];
-  if (!writeTools.includes(event.toolName)) return;
+  const editTools = ["replace_content", "write_file", "edit_file", "replace_symbol_body"];
+  if (!editTools.includes(event.toolName)) return;
 
-  const targetPath = event.input.path || event.input.TargetFile;
+  const targetPath = event.input.relative_path || event.input.path;
   if (!targetPath) return;
 
   try {
     ctx.ui.notify(`[Bridge] Validando edición en: ${targetPath}`);
     
-    // Consultamos a Serena por dependencias externas del archivo
-    const overview = await serena.getSymbolsOverview(targetPath);
-    
-    // Si Serena devuelve símbolos con muchas referencias, avisar al LLM
+    const overview = await provider.getSymbolsOverview(targetPath);
     const compressed = SemanticCompressor.compress(overview);
     
     if (compressed.includes("- ")) {
-      ctx.ui.notify("[Bridge] Detectados símbolos críticos. Inyectando advertencia.");
+      ctx.ui.notify("[Bridge] Detectados símbolos críticos.");
       return {
         block: false, 
         message: `[BRIDGE_WARNING] Estás editando un archivo con dependencias activas:\n${compressed}\nAsegúrate de que tus cambios sean compatibles.`
       };
     }
   } catch (error) {
-    console.error("[Bridge] Fallo en la validación de herramienta:", error);
+    console.error("[Bridge] Error en validación semántica:", error);
   }
 }
