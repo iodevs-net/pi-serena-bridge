@@ -1,29 +1,34 @@
-import type { HookAPI } from "@oh-my-pi/pi-coding-agent";
-import { handleToolCall } from "./hooks/tool-call.ts";
-import { handleContext } from "./hooks/context.ts";
-import { handleSessionStart } from "./hooks/session-start.ts";
-import { SerenaClient } from "./serena/client.ts";
+import { SerenaClient } from "./serena/client.js";
+import { handleSessionStart } from "./hooks/session-start.js";
+import { handleContext } from "./hooks/context.js";
+import { handleToolCall } from "./hooks/tool-call.js";
+import { handleSessionShutdown } from "./hooks/session-shutdown.js";
 
-export default function (api: HookAPI) {
-  // Initialize Serena Client with project CWD
-  // Note: we'll refine how to get the project path
-  const serena = new SerenaClient(process.cwd());
+/**
+ * Pi-Serena Semantic Bridge
+ * Extension for oh-my-pi
+ */
 
-  // Register Hooks
-  api.on("session_start", (event, ctx) => handleSessionStart(event as any, ctx as any, serena));
-  
-  api.on("context", (event, ctx) => handleContext(event as any, ctx as any, serena));
+const serena = new SerenaClient();
 
-  api.on("tool_call", async (event, ctx) => {
-    const response = await handleToolCall(event as any, ctx as any, serena);
-    if (response) {
-      if (response.block) return { block: true, message: response.message };
-      // Si no bloquea, podemos inyectar el mensaje como un warning
-      return { message: response.message };
-    }
-  });
-  
-  api.on("session_shutdown", async () => {
-    await serena.disconnect();
-  });
-}
+export default {
+  // 1. Inicialización
+  async session_start(event: any, ctx: any) {
+    await handleSessionStart(event, ctx, serena);
+  },
+
+  // 2. Inyección de Contexto
+  async context(event: any, ctx: any) {
+    await handleContext(event, ctx, serena);
+  },
+
+  // 3. Gatekeeper de Ediciones
+  async tool_call(event: any, ctx: any) {
+    return await handleToolCall(event, ctx, serena);
+  },
+
+  // 4. Limpieza (Audit Item 3.2)
+  async session_shutdown(event: any, ctx: any) {
+    await handleSessionShutdown(ctx, serena);
+  }
+};

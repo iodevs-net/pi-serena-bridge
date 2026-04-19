@@ -5,9 +5,9 @@ pi-serena-bridge is a Native Semantic Bridge for oh-my-pi and Serena MCP. It act
 
 ## Architecture & Data Flow
 The bridge follows a layered architecture:
-- **Layer A**: Serena Client adapter (manages MCP connection with timeouts)
-- **Layer B**: Semantic Compressor (processes Serena's symbol data)
-- **Layer C**: Hook Interceptors (oh-my-pi hook implementations)
+- **Layer A**: Serena Client adapter (manages MCP connection with timeouts and **semantic caching**)
+- **Layer B**: Semantic Compressor (processes Serena's symbol data with token-efficient truncation)
+- **Layer C**: Hook Interceptors (oh-my-pi hook implementations with **intent detection**)
 
 Data flow:
 1. oh-my-pi triggers hooks (session_start, context, tool_call, session_shutdown)
@@ -39,8 +39,10 @@ Data flow:
 - **Naming**: camelCase for variables/functions, PascalCase for classes/interfaces
 - **Error Handling**: Try/catch blocks with specific error messages and logging
 - **Async/Await**: Used for all MCP server communications
-- **Timeouts**: 10-second timeout for Serena tool calls (Regla de Oro 3)
+- **Timeouts**: Flexible timeouts (default 10s) defined by operation type
+- **Caching**: 10s TTL semantic cache to prevent server overload
 - **Dependency Injection**: SerenaClient passed to hook handlers
+- **Resilience**: Auto-reconnection logic and circuit-breaker states
 - **Null Checks**: Explicit null checks before MCP client usage
 - **Constants**: Timeout values defined as class constants
 

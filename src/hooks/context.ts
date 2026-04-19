@@ -1,44 +1,53 @@
-import { SerenaClient } from "../serena/client.ts";
-import { ContextEvent, ExtensionContext } from "../types.ts";
-import { SemanticCompressor } from "../compressor.ts";
+import { ContextEvent, ExtensionContext } from "../types.js";
+import { SerenaClient } from "../serena/client.js";
+import { SemanticCompressor } from "../compressor.js";
 
 /**
  * Hook: context
- * Inyecta pistas semánticas dinámicamente si detecta intención de cambio.
+ * Inyecta semántica de Serena cuando el usuario muestra intención de modificar código.
+ * (Addressing Audit Item 2.1 & 2.2)
  */
-export async function handleContext(
-  event: ContextEvent,
-  ctx: ExtensionContext,
-  serena: SerenaClient
-) {
+export async function handleContext(event: ContextEvent, ctx: ExtensionContext, serena: SerenaClient): Promise<void> {
   const lastMessage = event.messages[event.messages.length - 1];
-  if (!lastMessage || lastMessage.role !== "user") return;
+  if (lastMessage?.role !== "user") return;
 
-  const content = typeof lastMessage.content === "string" 
-    ? lastMessage.content 
-    : JSON.stringify(lastMessage.content);
-
-  // Regla LEAN: Solo inyectar si hay palabras clave de acción
-  const intentKeywords = ["refactor", "change", "fix", "use", "implement", "mover", "borrar"];
-  const hasIntent = intentKeywords.some(kw => content.toLowerCase().includes(kw));
+  // Diccionario expandido y multilingüe de intenciones (Audit 2.1)
+  const intents = [
+    "refactor", "cambiar", "change", "fix", "arreglar", "use", "usar", 
+    "implement", "implementar", "mover", "move", "borrar", "delete", 
+    "update", "actualizar", "modify", "modificar", "optimizar", "optimize",
+    "limpiar", "clean", "extract", "extraer", "inline"
+  ];
+  
+  const content = lastMessage.content.toLowerCase();
+  const hasIntent = intents.some(intent => content.includes(intent));
 
   if (hasIntent) {
     try {
-      ctx.ui.notify("[Bridge] Detectada intención semántica. Consultando Serena...");
+      ctx.ui.notify("[Bridge] Analizando impacto semántico...");
       
-      // Intentamos obtener un resumen del directorio actual
       const symbols = await serena.getSymbolsOverview(".");
+      if (!symbols || symbols.length < 10) return; // Evitar ruido (Audit 2.4)
+
       const compressed = SemanticCompressor.compress(symbols);
 
-      // Inyectar como mensaje de sistema invisible para el usuario pero visible para el LLM
+      // Formato optimizado para LLM (Audit 2.2)
+      const semanticAdvisory = `
+### 🛡️ SEMANTIC_ARCHITECT_ADVISORY
+The following project symbols were detected. Use this as a reference to ensure architectural integrity:
+\`\`\`text
+${compressed}
+\`\`\`
+*Review references before refactoring any of these symbols.*
+`.trim();
+
       event.messages.unshift({
         role: "system",
-        content: `[SEMANTIC_ADVISORY]\n${compressed}\nUtiliza esta información para evitar romper dependencias.`
+        content: semanticAdvisory
       });
       
-      ctx.ui.notify("[Bridge] Contexto semántico inyectado con éxito.");
     } catch (error) {
-      console.warn("[Bridge] No se pudo inyectar contexto semántico:", error);
+      console.warn("[Bridge] Salto de inyección semántica:", error);
     }
   }
 }
