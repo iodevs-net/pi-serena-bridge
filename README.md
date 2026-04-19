@@ -1,48 +1,41 @@
-# Pi-Serena Semantic Bridge 🚀
+# Pi-Serena Semantic Bridge (v1.3.0)
 
-**Pi-Serena Bridge** is a native extension for [oh-my-pi](https://github.com/iodevs-net/oh-my-pi) that establishes a proactive semantic link with the [Serena MCP Server](https://github.com/iodevs-net/serena). 
+**Native Semantic Bridge for oh-my-pi and Serena MCP.**
 
-It transforms your agent from a file-based editor into a **semantic-aware architect**, preventing breaking changes and optimizing context usage through real-time symbol analysis.
+Este bridge integra el servidor **Serena MCP** con el ecosistema **oh-my-pi** (OMP) para dotar al agente de una "visión semántica" proactiva, previniendo errores de dependencia y cambios disruptivos antes de que ocurran.
 
-## 🧠 The Problem: The Semantic Gap
-Standard coding agents are often "blind" to the global impact of their edits. They might modify a function in one file without knowing it's used in 20 others. This leads to broken dependencies, architectural erosion, and wasted tokens on manual searches.
+## 🛡️ Características Elite
 
-## ✨ Features
+- **Deep Impact Analysis (v1.3.0)**: Rastreo proactivo de referencias cruzadas. El bridge te advierte si un cambio local afecta a otros archivos del proyecto.
+- **Semantic Gatekeeper**: Intercepta llamadas a herramientas de edición (`tool_call`) para validar la integridad semántica.
+- **Smart Context Injection**: Inyecta proactivamente un mapa de símbolos optimizado cuando detecta intención de modificar código.
+- **Smart Compression**: Algoritmo de priorización que asegura que el contexto inyectado contenga la estructura más valiosa (exports, clases, interfaces).
+- **Vendor-Agnostic Architecture**: Diseñado bajo el patrón Strategy. Puedes cambiar Serena por cualquier otro proveedor semántico (LSP, Tree-sitter) mediante la interfaz `ISemanticProvider`.
+- **Resiliencia Industrial**: Implementa Circuit Breaker, reconexión automática y caché semántica con TTL.
+- **Elite Test Suite**: Suite de pruebas unitarias integradas con Bun Test para garantizar la estabilidad del núcleo.
 
-- **🛡️ Semantic Guard (Gatekeeper)**: Intercepts `edit` tool calls. If Serena detects that the change affects external dependencies, the bridge warns the agent before the commit is made.
-- **📡 Proactive Context Injection**: Automatically detects user intent (e.g., "refactor", "fix") and injects a compressed summary of relevant symbols into the LLM's system prompt.
-- **⚡ Semantic Compressor**: Uses a custom algorithm to fit critical project architecture data into less than 500 tokens.
-- **🔌 Native Integration**: Zero-latency hooks for `session_start`, `context`, and `tool_call`.
+## 🚀 Instalación Rápida
 
-## 🏗️ Architecture
-
-The bridge follows a strictly decoupled 3-layer architecture:
-
-1. **Layer A: Serena Client**: Manages the MCP connection via Stdio with robust 10s timeouts.
-2. **Layer B: Semantic Compressor**: Processes and truncates symbol data for token efficiency.
-3. **Layer C: Hook Interceptors**: Implements `oh-my-pi` extensibility API to orchestrate the bridge behavior.
-
-## 🚀 Installation
-
-1. Clone this repository into your `oh-my-pi` extensions directory:
+1. Asegúrate de tener instalado [oh-my-pi](https://github.com/iodevs-net/oh-my-pi).
+2. Clona este repositorio en tu directorio de extensiones:
    ```bash
-   mkdir -p ~/.omp/extensions
-   git clone https://github.com/iodevs-net/pi-serena-bridge.git ~/.omp/extensions/pi-serena-bridge
+   cd ~/.omp/extensions/
+   git clone https://github.com/iodevs-net/pi-serena-bridge.git
    ```
-2. Install dependencies:
+3. Instala las dependencias y verifica:
    ```bash
-   cd ~/.omp/extensions/pi-serena-bridge
+   cd pi-serena-bridge
    bun install
+   bun test
    ```
-3. Restart `omp`. You should see the `✅ Semántica Activa` status in your terminal.
 
-## 🛠️ Development
+## 🛠️ Arquitectura
 
-This project was built following the **DRY+KISS+LEAN+SOLID** principles.
+El bridge sigue una arquitectura de tres capas desacopladas:
+- **Capa A**: Adaptador de Cliente (Gestiona la conexión MCP y la resiliencia).
+- **Capa B**: Compresor Semántico (Optimiza la data para el LLM).
+- **Capa C**: Interceptores de Hooks (Implementa la lógica de oh-my-pi).
 
-- **Runtime**: [Bun](https://bun.sh)
-- **Language**: TypeScript (Strict Mode)
-- **Engine**: MCP SDK
+## 📄 Licencia
 
----
-Developed with ❤️ by the iodevs-net team.
+MIT - Desarrollado con orgullo para el ecosistema de agentes autónomos.
