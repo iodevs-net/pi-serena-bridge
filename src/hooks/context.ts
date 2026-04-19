@@ -12,21 +12,28 @@ export async function handleContext(
   provider: ISemanticProvider
 ): Promise<ContextEventResult | void> {
   const lastMessage = event.messages[event.messages.length - 1];
-  if (lastMessage?.role !== "user") return;
+  if (lastMessage?.role !== "user" || !lastMessage.content) return;
+
+  // Manejar contenido que puede ser string o Array de partes
+  const rawContent = Array.isArray(lastMessage.content) 
+    ? lastMessage.content.map(p => ("text" in p ? p.text : "")).join(" ")
+    : String(lastMessage.content);
+
+  const content = rawContent.toLowerCase();
 
   const intents = [
     "refactor", "cambiar", "change", "fix", "arreglar", "use", "usar", 
     "implement", "implementar", "mover", "move", "borrar", "delete", 
-    "update", "actualizar", "modify", "modificar", "optimizar", "optimize"
+    "update", "actualizar", "modify", "modificar", "optimizar", "optimize",
+    "analiza", "resumen", "explica", "qué hace", "contexto"
   ];
   
-  const content = lastMessage.content.toLowerCase();
   const hasIntent = intents.some(intent => content.includes(intent));
 
   if (hasIntent) {
     try {
       // Audit Fix #6: Intentar extraer un path de archivo del mensaje del usuario para mayor precisión.
-      const pathMatch = lastMessage.content.match(/['"`]([^'"`]+\.(ts|js|tsx|jsx|py|go|rs|java|cs))[`'"]/);
+      const pathMatch = rawContent.match(/['"`]([^'"`]+\.(ts|js|tsx|jsx|py|go|rs|java|cs))[`'"]/);
       const targetPath = pathMatch?.[1] || ".";
 
       ctx.ui.notify(`[Omni-Pi] Analizando semántica de: ${targetPath}`);
