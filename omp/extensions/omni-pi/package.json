@@ -1,6 +1,6 @@
 {
   "name": "omni-pi",
-  "version": "1.3.0",
+  "version": "5.0.0",
   "description": "Universal Semantic Intelligence Bridge for oh-my-pi",
   "main": "src/index.ts",
   "type": "module",
